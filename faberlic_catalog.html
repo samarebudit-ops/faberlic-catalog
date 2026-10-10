@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faberlic — Каталог-презентация</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --primary: #a83264;      /* Faberlic magenta-ish */
+      --primary-dark: #8a2852;
+      --accent: #f4d35e;
+      --bg: #fdf7fa;
+      --card: #ffffff;
+      --text: #2d2d2d;
+      --muted: #6b6b6b;
+      --success: #4caf50;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 24px 20px 40px;
+      text-align: center;
+      border-bottom-left-radius: 24px;
+      border-bottom-right-radius: 24px;
+      box-shadow: 0 8px 30px rgba(168, 50, 100, 0.3);
+    }
+    .logo {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 16px 60px;
+    }
+    .section-title {
+      font-size: 19px;
+      font-weight: 700;
+      margin: 34px 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .section-title::before {
+      content: '';
+      width: 5px;
+      height: 22px;
+      background: var(--accent);
+      border-radius: 3px;
+    }
+    .badge {
+      background: var(--accent);
+      color: #4a3b00;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .card {
+      background: var(--card);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .card:active {
+      transform: scale(0.97);
+    }
+    .card.wide { grid-column: span 2; }
+    .card-img {
+      width: 100%;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #f5e6f0 0%, #e8d5e6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+    }
+    .card-body {
+      padding: 12px;
+    }
+    .card-cat {
+      font-size: 10.5px;
+      color: var(--primary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 3px 0 2px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-desc {
+      font-size: 11px;
+      color: var(--muted);
+      margin: 0 0 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 6px;
+    }
+    .price {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .price-old {
+      font-size: 11.5px;
+      text-decoration: line-through;
+      color: var(--muted);
+      margin-left: 5px;
+    }
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 9px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: var(--primary-dark); }
+    .promo {
+      background: linear-gradient(135deg, #fff7e6 0%, #fff3d6 100%);
+      border: 1px solid #fce8b8;
+      border-radius: 16px;
+      padding: 14px;
+      margin: 10px 0 0;
+    }
+    .promo-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .promo-row:last-child { margin: 0; }
+    .promo-icon { font-size: 18px; }
+    .promo-price {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-left: auto;
+    }
+    .promo-price .old {
+      text-decoration: line-through;
+      color: var(--muted);
+      font-weight: 500;
+      font-size: 12px;
+      margin-left: 6px;
+    }
+    .contacts {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 20px;
+      margin-top: 24px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .contacts h3 { margin: 0 0 12px; font-size: 17px; }
+    .contact-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 14px;
+      margin: 10px 0;
+    }
+    .contact-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .whatsapp {
+      background: #25D366;
+      color: white;
+    }
+    @media (max-width: 360px) {
+      .grid { gap: 10px; }
+      .card-title { font-size: 12.5px; }
+      .price { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">FABERLIC</div>
+    <div class="subtitle">Каталог-презентация · Актуальные цены</div>
+  </div>
+
+  <div class="container">
+    <div class="section-title">🔥 Хиты продаж</div>
+
+    <!-- Top product (wide) -->
+    <div class="card wide">
+      <div class="card-img">💄</div>
+      <div class="card-body">
+        <div class="card-cat">Уход за кожей</div>
+        <div class="card-title">Комплекс "Ревитоника" — омолаживающий уход за лицом</div>
+        <div class="promo">
+          <div class="promo-row">
+            <span class="promo-icon">🎁</span>
+            <span>Подарок при заказе — бальзам для губ</span>
+          </div>
+          <div class="promo-row">
+            <span class="promo-icon">⚡</span>
+            <span>Более 5 000 отзывов</span>
+            <span class="promo-price">4 290₽ <span class="old">5 900₽</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-img">💋</div>
+        <div class="card-body">
+          <div class="card-cat">Губы</div>
+          <div class="card-title">Тинт для губ Long Lasting</div>
+          <div class="card-desc">Стойкий цвет до 12 часов, увлажнение</div>
+          <div class="card-footer">
+            <div>
+              <span class="price">990₽</span>
+              <span class="price-old">1 490₽</span>
+            </div>
+            <button class="btn">Заказать</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img">🧴</div>
+        <div class="card-body">
+          <div class="card-cat">Тело</div>
+          <div class="card-title">Гель-скраб "Кофе с молоком"</div>
+          <div class="card-desc">Отшелушивание + питание кожи</div>
+          <div class="card-footer">
+            <div>
+              <span class="price">390₽</span>
+              <span class="price-old">590₽</span>
+            </div>
+            <button class="btn">Заказать</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img">💆</div>
+        <div class="card-body">
+          <div class="card-cat">Волосы</div>
+          <div class="card-title">Шампунь и кондиционер Revivor</div>
+          <div class="card-desc">Восстановление по технологиям R-Complex</div>
+          <div class="card-footer">
+            <div>
+              <span class="price">790₽</span>
+              <span class="price-old">1 190₽</span>
+            </div>
+            <button class="btn">Заказать</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img">✨</div>
+        <div class="card-body">
+          <div class="card-cat">Сияние</div>
+          <div class="card-title">Сыворотка Vitamin C Bright</div>
+          <div class="card-desc">Ясный тон, осветление пигментации</div>
+          <div class="card-footer">
+            <div>
+              <span class="price">1 290₽</span>
+              <span class="price-old">1 890₽</span>
+            </div>
+            <button class="btn">Заказать</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img">👁️</div>
+        <div class="card-body">
+          <div class="card-cat">Век</div>
+          <div class="card-title">Сыворотка для ресниц ProKeratin</div>
+          <div class="card-desc">Рост и крепость за 4 недели</div>
+          <div class="card-footer">
+            <div>
+              <span class="price">1 590₽</span>
+              <span class="price-old">2 290₽</span>
+            </div>
+            <button class="btn">Заказать</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img">💪</div>
+        <div class="card-body">
+          <div class="card-cat">Фигура</div>
+          <div class="card-title">Биоактивные пластыри Slim Fit</div>
+          <div class="card-desc">Коррекция силуэта на ночь</div>
+          <div class="card-footer">
+            <div>
+              <span class="price">690₽</span>
+              <span class="price-old">990₽</span>
+            </div>
+            <button class="btn">Заказать</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">📱 Связаться со мной</div>
+    <div class="contacts">
+      <h3>Консультант Faberlic</h3>
+      <div class="contact-row">
+        <span>📞</span>
+        <a href="tel:+79990000000" class="contact-link">+7 (999) 000-00-00</a>
+      </div>
+      <div class="contact-row">
+        <span>💬</span>
+        <a href="https://wa.me/79990000000" class="btn whatsapp">Написать в WhatsApp</a>
+      </div>
+      <div class="contact-row">
+        <span>✉️</span>
+        <a href="mailto:consultant@faberlic.ru" class="contact-link">consultant@faberlic.ru</a>
+      </div>
+      <p style="font-size:12px;color:#888;margin:12px 0 0;">Отправьте "Прайс" — вышлю полный каталог с ценами</p>
+    </div>
+  </div>
+
+  <script>
+    // Заказ по WhatsApp с pre-filled сообщением
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const card = e.target.closest('.card');
+        const title = card.querySelector('.card-title').textContent.trim();
+        const price = card.querySelector('.price').textContent;
+        const phone = '79990000000';
+        const msg = encodeURIComponent(
+          `Здравствуйте! Хочу заказать: "${title}" — ${price}. Подскажите наличие.`
+        );
+        window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+      });
+    });
+  </script>
+</body>
+</html>
