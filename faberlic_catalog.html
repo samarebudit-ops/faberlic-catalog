@@ -210,6 +210,39 @@
       background: #25D366;
       color: white;
     }
+    .search-filters {
+      padding: 16px;
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 10;
+    }
+    #searchInput {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+    .filters {
+      display: flex;
+      overflow-x: auto;
+      gap: 8px;
+      padding-bottom: 5px;
+    }
+    .filter-btn {
+      white-space: nowrap;
+      padding: 6px 12px;
+      border: 1px solid var(--primary);
+      background: white;
+      color: var(--primary);
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .filter-btn.active {
+      background: var(--primary);
+      color: white;
+    }
     @media (max-width: 360px) {
       .grid { gap: 10px; }
       .card-title { font-size: 12.5px; }
@@ -224,10 +257,25 @@
   </div>
 
   <div class="container">
+    <!-- Поиск и фильтры -->
+    <div class="search-filters">
+      <input type="text" id="searchInput" placeholder="Поиск товаров...">
+      <div class="filters" id="filters">
+        <button class="filter-btn active" data-cat="все">Все</button>
+        <button class="filter-btn" data-cat="лицо">Лицо</button>
+        <button class="filter-btn" data-cat="тело">Тело</button>
+        <button class="filter-btn" data-cat="волосы">Волосы</button>
+        <button class="filter-btn" data-cat="парфюмерия">Парфюмерия</button>
+        <button class="filter-btn" data-cat="мужское">Мужское</button>
+        <button class="filter-btn" data-cat="дом">Дом</button>
+        <button class="filter-btn" data-cat="подарки">Подарки</button>
+      </div>
+    </div>
+
     <div class="section-title">🔥 Хиты продаж</div>
 
     <!-- Top product (wide) -->
-    <div class="card wide">
+    <div class="card wide" data-category="лицо">
       <div class="card-img">💄</div>
       <div class="card-body">
         <div class="card-cat">Уход за кожей</div>
@@ -246,8 +294,8 @@
       </div>
     </div>
 
-    <div class="grid">
-      <div class="card">
+    <div class="grid" id="productGrid">
+      <div class="card" data-category="лицо">
         <div class="card-img">💋</div>
         <div class="card-body">
           <div class="card-cat">Губы</div>
@@ -263,7 +311,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-category="тело">
         <div class="card-img">🧴</div>
         <div class="card-body">
           <div class="card-cat">Тело</div>
@@ -279,7 +327,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-category="волосы">
         <div class="card-img">💆</div>
         <div class="card-body">
           <div class="card-cat">Волосы</div>
@@ -295,7 +343,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-category="лицо">
         <div class="card-img">✨</div>
         <div class="card-body">
           <div class="card-cat">Сияние</div>
@@ -311,7 +359,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-category="лицо">
         <div class="card-img">👁️</div>
         <div class="card-body">
           <div class="card-cat">Век</div>
@@ -327,7 +375,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" data-category="тело">
         <div class="card-img">💪</div>
         <div class="card-body">
           <div class="card-cat">Фигура</div>
@@ -375,6 +423,35 @@
           `Здравствуйте! Хочу заказать: "${title}" — ${price}. Подскажите наличие.`
         );
         window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+      });
+    });
+
+    // Фильтрация и поиск
+    const searchInput = document.getElementById('searchInput');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.card');
+
+    function updateDisplay() {
+      const filter = document.querySelector('.filter-btn.active').dataset.cat;
+      const search = searchInput.value.toLowerCase();
+
+      cards.forEach(card => {
+        const cat = card.dataset.category || '';
+        const title = card.querySelector('.card-title').textContent.toLowerCase();
+
+        const matchesCat = (filter === 'все' || cat === filter);
+        const matchesSearch = title.includes(search);
+
+        card.style.display = (matchesCat && matchesSearch) ? '' : 'none';
+      });
+    }
+
+    searchInput.addEventListener('input', updateDisplay);
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        updateDisplay();
       });
     });
   </script>
